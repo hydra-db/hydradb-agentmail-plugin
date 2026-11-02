@@ -1,0 +1,9 @@
+[project]
+name = "hydradb-agentmail-plugin"
+version = "0.1.0"
+description = "Sync AgentMail inbox email into HydraDB knowledge as app sources."
+requires-python = ">=3.9"
+dependencies = ["requests>=2.28"]
+
+[tool.setuptools]
+py-modules = ["agentmail"]
