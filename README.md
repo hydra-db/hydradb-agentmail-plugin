@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/icon.png" width="88" alt="HydraDB" />
+  <img src="https://raw.githubusercontent.com/hydra-db/hydradb-agentmail-plugin/main/assets/icon.png" width="88" alt="HydraDB" />
 </p>
 
 <h1 align="center">HydraDB for AgentMail</h1>
@@ -28,14 +28,14 @@ provides a native `thread_id`, so threads need no reconstruction.
 ## Quick start
 
 ```bash
-pip install -e sync/
+pip install hydradb-agentmail-plugin
 
 export AGENTMAIL_API_KEY=...       # AgentMail API key
 export HYDRADB_API_KEY=...         # HydraDB API key
 export HYDRADB_DATABASE=...        # target database (tenant)
 
-python sync/agentmail.py             # every inbox
-python sync/agentmail.py <inbox_id>  # one inbox
+agentmail-sync             # every inbox
+agentmail-sync <inbox_id>  # one inbox
 ```
 
 ## Behavior
