@@ -5,8 +5,8 @@
 <h1 align="center">HydraDB for AgentMail</h1>
 
 <p align="center">
-  Sync <a href="https://agentmail.to">AgentMail</a> inboxes into a
-  <a href="https://hydradb.com">HydraDB</a> knowledge graph.
+  Sync <a href="https://agentmail.to">AgentMail</a> inboxes into
+  <a href="https://hydradb.com">HydraDB</a>, a context layer for your agents.
 </p>
 
 <p align="center">
