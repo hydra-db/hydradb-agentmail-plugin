@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import json
+import sys
 import time
 from dataclasses import dataclass
 from typing import Any, Iterable
@@ -79,9 +80,20 @@ def list_inboxes(
     return : inbox_ids (list of string) - Inbox identifiers.
     """
     http = session or requests.Session()
-    resp = _get_with_retry(http, f"{cfg.base_url}/inboxes", _agentmail_headers(cfg), {"limit": 100})
-    body = resp.json()
-    return [ibx.get("inbox_id") or ibx.get("id") for ibx in body.get("inboxes", []) if ibx]
+    url = f"{cfg.base_url}/inboxes"
+    params: dict[str, Any] = {"limit": 100}
+    inbox_ids: list[str] = []
+    while True:
+        resp = _get_with_retry(http, url, _agentmail_headers(cfg), params)
+        body = resp.json()
+        for ibx in body.get("inboxes", []):
+            if ibx:
+                inbox_ids.append(ibx.get("inbox_id") or ibx.get("id"))
+        token = body.get("next_page_token")
+        if not token:
+            break
+        params = {"limit": 100, "page_token": token}
+    return inbox_ids
 
 
 def fetch_messages(
@@ -252,9 +264,19 @@ def ingest_items(
         )
         resp.raise_for_status()
         body = resp.json()
-        if not body.get("success", False):
+        results = body.get("results")
+        if isinstance(results, list) and results:
+            failed = [r for r in results if r.get("error") or r.get("error_code")]
+            sent += len(batch) - len(failed)
+            for r in failed:
+                print(
+                    f"HydraDB ingest skipped {r.get('id')}: {r.get('error') or r.get('error_code')}",
+                    file=sys.stderr,
+                )
+        elif body.get("success", False):
+            sent += len(batch)
+        else:
             raise RuntimeError(f"HydraDB ingest failed: {body.get('error')}")
-        sent += len(batch)
     return sent
 
 
